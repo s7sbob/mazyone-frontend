@@ -1,0 +1,85 @@
+/* ملف الألوان المخصص */
+
+/* متغيرات CSS للألوان الأساسية */
+:root {
+  /* الألوان الأساسية من لوحة التصميم */
+  --mazyone-primary-dark: #2D2D2D;
+  --mazyone-primary-gray: #444444;
+  --mazyone-bg-secondary: #EDEDED;
+  --mazyone-bg-light: #F5F5F5;
+  --mazyone-bg-primary: #FFFFFF;
+  --mazyone-accent-blue: #006BE3;
+  --mazyone-accent-teal: #7EDDB9;
+  --mazyone-accent-yellow: #FACC15;
+  --mazyone-accent-orange: #E1841F;
+  
+  /* ألوان إضافية للنظام */
+  --mazyone-success: #22C55E;
+  --mazyone-warning: #F59E0B;
+  --mazyone-error: #EF4444;
+  --mazyone-info: #3B82F6;
+  
+  /* ألوان النصوص */
+  --mazyone-text-primary: var(--mazyone-primary-dark);
+  --mazyone-text-secondary: #4B4B4B;
+  --mazyone-text-muted: #6B7280;
+  --mazyone-text-light: #9CA3AF;
+  
+  /* ألوان الحدود */
+  --mazyone-border-light: #E5E7EB;
+  --mazyone-border-medium: #D1D5DB;
+  --mazyone-border-dark: #9CA3AF;
+  
+  /* الظلال */
+  --mazyone-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --mazyone-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --mazyone-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  
+  /* التدرجات */
+  --mazyone-gradient-primary: linear-gradient(135deg, var(--mazyone-accent-blue) 0%, var(--mazyone-accent-teal) 100%);
+  --mazyone-gradient-secondary: linear-gradient(135deg, var(--mazyone-accent-teal) 0%, var(--mazyone-accent-yellow) 100%);
+  --mazyone-gradient-warm: linear-gradient(135deg, var(--mazyone-accent-yellow) 0%, var(--mazyone-accent-orange) 100%);
+}
+
+/* الوضع الليلي */
+[data-theme="dark"] {
+  --mazyone-bg-primary: #1E1E1E;
+  --mazyone-bg-secondary: #2A2A2A;
+  --mazyone-bg-light: #374151;
+  
+  --mazyone-text-primary: #F5F5F5;
+  --mazyone-text-secondary: #E5E7EB;
+  --mazyone-text-muted: #9CA3AF;
+  --mazyone-text-light: #6B7280;
+  
+  --mazyone-border-light: #374151;
+  --mazyone-border-medium: #4B5563;
+  --mazyone-border-dark: #6B7280;
+}
+
+/* فئات الألوان المساعدة */
+.bg-mazyone-primary { background-color: var(--mazyone-bg-primary); }
+.bg-mazyone-secondary { background-color: var(--mazyone-bg-secondary); }
+.bg-mazyone-accent-blue { background-color: var(--mazyone-accent-blue); }
+.bg-mazyone-accent-teal { background-color: var(--mazyone-accent-teal); }
+.bg-mazyone-accent-yellow { background-color: var(--mazyone-accent-yellow); }
+.bg-mazyone-accent-orange { background-color: var(--mazyone-accent-orange); }
+
+.text-mazyone-primary { color: var(--mazyone-text-primary); }
+.text-mazyone-secondary { color: var(--mazyone-text-secondary); }
+.text-mazyone-muted { color: var(--mazyone-text-muted); }
+.text-mazyone-accent-blue { color: var(--mazyone-accent-blue); }
+.text-mazyone-accent-teal { color: var(--mazyone-accent-teal); }
+
+.border-mazyone-light { border-color: var(--mazyone-border-light); }
+.border-mazyone-medium { border-color: var(--mazyone-border-medium); }
+.border-mazyone-dark { border-color: var(--mazyone-border-dark); }
+
+.shadow-mazyone-sm { box-shadow: var(--mazyone-shadow-sm); }
+.shadow-mazyone-md { box-shadow: var(--mazyone-shadow-md); }
+.shadow-mazyone-lg { box-shadow: var(--mazyone-shadow-lg); }
+
+/* تدرجات الخلفية */
+.bg-gradient-mazyone-primary { background: var(--mazyone-gradient-primary); }
+.bg-gradient-mazyone-secondary { background: var(--mazyone-gradient-secondary); }
+.bg-gradient-mazyone-warm { background: var(--mazyone-gradient-warm); }
