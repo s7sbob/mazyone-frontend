@@ -1094,6 +1094,139 @@ const Sidebar = () => {
 
 export default Sidebar;
 
+===== src/components/qr/QRShapes.tsx =====
+// src/components/qr/QRShapes.tsx (محسن ومصحح)
+import React, { useState } from 'react';
+import { cn } from '../../utils/cn';
+
+const QR_SHAPES = {
+  square: { name: 'مربع', path: 'M3 3h18v18H3z' },
+  circle: { name: 'دائرة', path: 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z' },
+  heart: { name: 'قلب', path: 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z' },
+  star: { name: 'نجمة', path: 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z' },
+  diamond: { name: 'معين', path: 'M6 2l2 4h8l2-4h4l-4 7 4 7h-4l-2-4H8l-2 4H2l4-7L2 2h4z' },
+  hexagon: { name: 'سداسي', path: 'M17.5 3.5L22 12l-4.5 8.5h-9L4 12l4.5-8.5h9z' },
+  apple: { name: 'تفاحة', path: 'M12 2c3.31 0 6 2.69 6 6 0 2.97-2.16 5.43-5 5.92V16h2v2h-6v-2h2v-2.08c-2.84-.49-5-2.95-5-5.92 0-3.31 2.69-6 6-6z' },
+  guitar: { name: 'جيتار', path: 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.19 0 2.34-.21 3.41-.6.3-.11.49-.4.49-.72v-1.57c0-.55-.45-1-1-1h-1c-2.76 0-5-2.24-5-5s2.24-5 5-5h1c.55 0 1-.45 1-1V6.32c0-.32-.19-.61-.49-.72C14.34 2.21 13.19 2 12 2z' },
+  car: { name: 'سيارة', path: 'M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z' },
+  camera: { name: 'كاميرا', path: 'M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z' },
+  laptop: { name: 'لابتوب', path: 'M20 18c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H1v2h22v-2h-3zM4 6h16v10H4V6z' },
+  phone: { name: 'هاتف', path: 'M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z' },
+  house: { name: 'منزل', path: 'M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z' },
+  pizza: { name: 'بيتزا', path: 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z' },
+  coffee: { name: 'قهوة', path: 'M18.5 3H6c-.83 0-1.5.67-1.5 1.5v3C4.5 8.33 5.17 9 6 9h.5v8c0 1.1.9 2 2 2h7c1.1 0 2-.9 2-2V9h.5c.83 0 1.5-.67 1.5-1.5v-3C19 3.67 18.33 3 17.5 3h-1z' },
+  crown: { name: 'تاج', path: 'M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5z' },
+  lightning: { name: 'برق', path: 'M11 21h-1l1-7H7.5c-.88 0-.33-.75-.31-.78C8.48 10.94 10.42 7.54 13.01 3h1.05L13 10h3.5c.49 0 .56.75.48.78l-5.98 10.22z' }
+};
+
+interface QRShapesProps {
+  selectedShape: string;
+  onShapeSelect: (shapeId: string) => void;
+  className?: string;
+}
+
+const QRShapes: React.FC<QRShapesProps> = ({ selectedShape, onShapeSelect, className }) => {
+  return (
+    <div className={className}>
+      <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-3 max-h-64 overflow-y-auto">
+        {Object.entries(QR_SHAPES).map(([id, shape]) => (
+          <button
+            key={id}
+            onClick={() => onShapeSelect(id)}
+            className={cn(
+              "aspect-square p-2 rounded-lg border-2 transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-500",
+              selectedShape === id
+                ? "border-primary-500 bg-primary-50 dark:bg-primary-900/20"
+                : "border-neutral-200 dark:border-neutral-700 hover:border-primary-300"
+            )}
+            title={shape.name}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="w-full h-full text-neutral-600 dark:text-neutral-400"
+            >
+              <path d={shape.path} />
+            </svg>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default QRShapes;
+
+===== src/components/qr/QRStickers.tsx =====
+// src/components/qr/QRStickers.tsx (محسن ومصحح)
+import React from 'react';
+import { cn } from '../../utils/cn';
+
+const STICKER_CONFIGS = {
+  'hiring-1': { name: 'نوظف الآن', color: 'green', icon: '💼' },
+  'hiring-2': { name: 'باحث عن وظيفة', color: 'blue', icon: '🔍' },
+  'hiring-3': { name: 'متاح للعمل', color: 'purple', icon: '💻' },
+  'support-1': { name: 'دعم فلسطين', color: 'red', icon: '🇵🇸' },
+  'support-2': { name: 'التوعية البيئية', color: 'green', icon: '🌱' },
+  'celebration-1': { name: 'عيد مبارك', color: 'yellow', icon: '🎉' },
+  'celebration-2': { name: 'تخرج', color: 'indigo', icon: '🎓' },
+  'business-1': { name: 'شركة ناشئة', color: 'teal', icon: '🚀' },
+  'social-1': { name: 'متابعوني', color: 'cyan', icon: '👥' },
+  'seasonal-1': { name: 'رمضان كريم', color: 'emerald', icon: '🌙' }
+};
+
+const COLOR_CLASSES = {
+  green: 'border-green-500 bg-green-50 text-green-700',
+  blue: 'border-blue-500 bg-blue-50 text-blue-700',
+  purple: 'border-purple-500 bg-purple-50 text-purple-700',
+  red: 'border-red-500 bg-red-50 text-red-700',
+  yellow: 'border-yellow-500 bg-yellow-50 text-yellow-700',
+  indigo: 'border-indigo-500 bg-indigo-50 text-indigo-700',
+  teal: 'border-teal-500 bg-teal-50 text-teal-700',
+  cyan: 'border-cyan-500 bg-cyan-50 text-cyan-700',
+  emerald: 'border-emerald-500 bg-emerald-50 text-emerald-700'
+};
+
+interface QRStickersProps {
+  selectedSticker: string;
+  onStickerSelect: (stickerId: string) => void;
+  className?: string;
+}
+
+const QRStickers: React.FC<QRStickersProps> = ({ selectedSticker, onStickerSelect, className }) => {
+  return (
+    <div className={className}>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-h-64 overflow-y-auto">
+        {Object.entries(STICKER_CONFIGS).map(([id, sticker]) => (
+          <button
+            key={id}
+            onClick={() => onStickerSelect(id)}
+            className={cn(
+              "relative aspect-square p-3 rounded-lg border-2 transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-500",
+              selectedSticker === id
+                ? "border-primary-500 bg-primary-50 dark:bg-primary-900/20"
+                : "border-neutral-200 dark:border-neutral-700 hover:border-primary-300"
+            )}
+            title={sticker.name}
+          >
+            <div className={cn(
+              "w-full h-full rounded-lg flex flex-col items-center justify-center text-center border-4",
+              COLOR_CLASSES[sticker.color as keyof typeof COLOR_CLASSES]
+            )}>
+              <div className="text-2xl mb-1">{sticker.icon}</div>
+              <div className="text-xs font-bold leading-tight">
+                {sticker.name}
+              </div>
+            </div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default QRStickers;
+
 ===== src/components/ThemeCustomizer.tsx =====
 import React, { useEffect, useState } from 'react';
 import { Palette, Star, Undo2 } from 'lucide-react';
@@ -1833,6 +1966,329 @@ body {
 .dark .login-input:focus {
   border-color: #3B82F6;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+===== src/lib/qr-generator.ts =====
+// src/lib/qr-generator.ts
+import QRCodeLib from 'qrcode';
+
+export interface QROptions {
+  size: number;
+  foregroundColor: string;
+  backgroundColor: string;
+  shape: string;
+  pattern: 'square' | 'dots' | 'rounded' | 'diamond' | 'star';
+  logo?: string;
+  logoSize: number;
+  sticker?: string;
+  eyeColor: string;
+  eyeStrokeColor: string;
+  eyeballColor: string;
+}
+
+export class AdvancedQRGenerator {
+  private canvas: HTMLCanvasElement;
+  private ctx: CanvasRenderingContext2D;
+
+  constructor() {
+    this.canvas = document.createElement('canvas');
+    this.ctx = this.canvas.getContext('2d')!;
+  }
+
+  async generateQR(data: string, options: QROptions): Promise<string> {
+    const { size } = options;
+    this.canvas.width = size;
+    this.canvas.height = size;
+
+    // Generate base QR code
+    const qrDataURL = await QRCodeLib.toDataURL(data, {
+      width: size,
+      margin: 1,
+      color: {
+        dark: options.foregroundColor,
+        light: options.backgroundColor,
+      },
+    });
+
+    return this.applyCustomizations(qrDataURL, options);
+  }
+
+private async applyCustomizations(qrDataURL: string, options: QROptions): Promise<string> {
+  const img = new Image(); // Remove type annotation or use HTMLImageElement
+  img.src = qrDataURL;
+  
+  await new Promise<void>((resolve) => {
+    img.onload = () => resolve();
+  });
+
+  this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+  // Apply shape mask
+  if (options.shape !== 'square') {
+    this.applyShapeMask(options);
+  }
+
+  // Draw base QR with pattern
+  this.drawCustomPattern(img, options);
+
+  // Apply sticker frame
+  if (options.sticker) {
+    this.applySticker(options);
+  }
+
+  // Add logo
+  if (options.logo) {
+    await this.addLogo(options);
+  }
+
+  return this.canvas.toDataURL();
+}
+
+
+  private applyShapeMask(options: QROptions) {
+    const { size } = options;
+    const center = size / 2;
+    
+    this.ctx.save();
+    this.ctx.beginPath();
+
+    switch (options.shape) {
+      case 'circle':
+        this.ctx.arc(center, center, center - 20, 0, 2 * Math.PI);
+        break;
+      case 'heart':
+        this.drawHeart(center, center, size * 0.4);
+        break;
+      case 'star':
+        this.drawStar(center, center, 5, size * 0.4, size * 0.2);
+        break;
+      case 'hexagon':
+        this.drawHexagon(center, center, size * 0.4);
+        break;
+      case 'diamond':
+        this.drawDiamond(center, center, size * 0.35);
+        break;
+      case 'apple':
+        this.drawApple(center, center, size * 0.4);
+        break;
+      default:
+        this.ctx.rect(20, 20, size - 40, size - 40);
+    }
+
+    this.ctx.clip();
+  }
+
+  private drawCustomPattern(img = new Image(), options: QROptions) {
+    if (options.pattern === 'square') {
+      this.ctx.drawImage(img, 0, 0);
+      return;
+    }
+
+    // Convert QR to custom pattern
+    this.ctx.drawImage(img, 0, 0);
+    const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+    const data = imageData.data;
+
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    
+    // Draw background
+    this.ctx.fillStyle = options.backgroundColor;
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+    const moduleSize = this.canvas.width / 25; // Approximate QR module size
+
+    for (let y = 0; y < this.canvas.height; y += moduleSize) {
+      for (let x = 0; x < this.canvas.width; x += moduleSize) {
+        const pixel = this.getPixel(data, x, y, this.canvas.width);
+        
+        if (this.isBlackPixel(pixel)) {
+          this.ctx.fillStyle = options.foregroundColor;
+          this.drawModule(x, y, moduleSize, options.pattern);
+        }
+      }
+    }
+  }
+
+  private drawModule(x: number, y: number, size: number, pattern: string) {
+    const centerX = x + size / 2;
+    const centerY = y + size / 2;
+    const radius = size * 0.4;
+
+    this.ctx.save();
+    
+    switch (pattern) {
+      case 'dots':
+        this.ctx.beginPath();
+        this.ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+        this.ctx.fill();
+        break;
+      case 'rounded':
+        this.ctx.beginPath();
+        this.ctx.roundRect(x + 1, y + 1, size - 2, size - 2, size * 0.2);
+        this.ctx.fill();
+        break;
+      case 'diamond':
+        this.ctx.beginPath();
+        this.ctx.moveTo(centerX, y);
+        this.ctx.lineTo(x + size, centerY);
+        this.ctx.lineTo(centerX, y + size);
+        this.ctx.lineTo(x, centerY);
+        this.ctx.closePath();
+        this.ctx.fill();
+        break;
+      case 'star':
+        this.drawStar(centerX, centerY, 5, radius, radius * 0.5);
+        this.ctx.fill();
+        break;
+      default:
+        this.ctx.fillRect(x, y, size, size);
+    }
+    
+    this.ctx.restore();
+  }
+
+  private applySticker(options: QROptions) {
+    const { size } = options;
+    const sticker = this.getStickerConfig(options.sticker!);
+    
+    if (!sticker) return;
+
+    // Draw sticker frame
+    this.ctx.save();
+    this.ctx.strokeStyle = sticker.borderColor;
+    this.ctx.lineWidth = 8;
+    this.ctx.setLineDash(sticker.dashPattern || []);
+    
+    const margin = 15;
+    this.ctx.strokeRect(margin, margin, size - margin * 2, size - margin * 2);
+    
+    // Add sticker text/icon
+    if (sticker.text) {
+      this.ctx.fillStyle = sticker.textColor;
+      this.ctx.font = 'bold 16px Arial';
+      this.ctx.textAlign = 'center';
+      this.ctx.fillText(sticker.text, size / 2, 35);
+    }
+    
+    this.ctx.restore();
+  }
+
+private async addLogo(options: QROptions) {
+  if (!options.logo) return;
+
+  const logoImg = new Image(); // Fixed: Remove Image type annotation
+  logoImg.src = options.logo;
+  
+  await new Promise<void>((resolve) => {
+    logoImg.onload = () => resolve();
+  });
+
+  const logoSize = options.logoSize;
+  const x = (this.canvas.width - logoSize) / 2;
+  const y = (this.canvas.height - logoSize) / 2;
+
+  // Draw logo background
+  this.ctx.fillStyle = '#FFFFFF';
+  this.ctx.fillRect(x - 4, y - 4, logoSize + 8, logoSize + 8);
+  
+  // Draw logo
+  this.ctx.drawImage(logoImg, x, y, logoSize, logoSize);
+}
+
+  // Shape drawing methods
+  private drawHeart(x: number, y: number, size: number) {
+    this.ctx.beginPath();
+    this.ctx.moveTo(x, y + size * 0.3);
+    this.ctx.bezierCurveTo(x, y, x - size * 0.5, y, x - size * 0.5, y + size * 0.3);
+    this.ctx.bezierCurveTo(x - size * 0.5, y + size * 0.6, x, y + size * 0.9, x, y + size);
+    this.ctx.bezierCurveTo(x, y + size * 0.9, x + size * 0.5, y + size * 0.6, x + size * 0.5, y + size * 0.3);
+    this.ctx.bezierCurveTo(x + size * 0.5, y, x, y, x, y + size * 0.3);
+    this.ctx.closePath();
+  }
+
+  private drawStar(x: number, y: number, points: number, outer: number, inner: number) {
+    this.ctx.beginPath();
+    for (let i = 0; i < points * 2; i++) {
+      const radius = i % 2 === 0 ? outer : inner;
+      const angle = (i * Math.PI) / points;
+      const px = x + Math.cos(angle) * radius;
+      const py = y + Math.sin(angle) * radius;
+      if (i === 0) this.ctx.moveTo(px, py);
+      else this.ctx.lineTo(px, py);
+    }
+    this.ctx.closePath();
+  }
+
+  private drawHexagon(x: number, y: number, size: number) {
+    this.ctx.beginPath();
+    for (let i = 0; i < 6; i++) {
+      const angle = (i * Math.PI) / 3;
+      const px = x + Math.cos(angle) * size;
+      const py = y + Math.sin(angle) * size;
+      if (i === 0) this.ctx.moveTo(px, py);
+      else this.ctx.lineTo(px, py);
+    }
+    this.ctx.closePath();
+  }
+
+  private drawDiamond(x: number, y: number, size: number) {
+    this.ctx.beginPath();
+    this.ctx.moveTo(x, y - size);
+    this.ctx.lineTo(x + size, y);
+    this.ctx.lineTo(x, y + size);
+    this.ctx.lineTo(x - size, y);
+    this.ctx.closePath();
+  }
+
+  private drawApple(x: number, y: number, size: number) {
+    this.ctx.beginPath();
+    this.ctx.arc(x, y + size * 0.1, size * 0.8, 0, Math.PI * 2);
+    // Add apple stem
+    this.ctx.moveTo(x, y - size * 0.7);
+    this.ctx.lineTo(x, y - size * 0.3);
+    // Add apple leaf
+    this.ctx.bezierCurveTo(x + size * 0.1, y - size * 0.6, x + size * 0.3, y - size * 0.5, x + size * 0.2, y - size * 0.3);
+    this.ctx.closePath();
+  }
+
+  private getStickerConfig(stickerId: string) {
+    const stickers: Record<string, any> = {
+      'hiring-1': {
+        borderColor: '#10B981',
+        textColor: '#10B981',
+        text: 'نوظف الآن',
+        dashPattern: []
+      },
+      'hiring-2': {
+        borderColor: '#3B82F6',
+        textColor: '#3B82F6',
+        text: 'باحث عن وظيفة',
+        dashPattern: []
+      },
+      'support-1': {
+        borderColor: '#EF4444',
+        textColor: '#EF4444',
+        text: 'دعم فلسطين',
+        dashPattern: []
+      },
+      'celebration-1': {
+        borderColor: '#F59E0B',
+        textColor: '#F59E0B',
+        text: 'عيد مبارك',
+        dashPattern: [5, 5]
+      }
+    };
+    return stickers[stickerId];
+  }
+
+  private getPixel(data: Uint8ClampedArray, x: number, y: number, width: number) {
+    const i = (Math.floor(y) * width + Math.floor(x)) * 4;
+    return [data[i], data[i + 1], data[i + 2], data[i + 3]];
+  }
+
+  private isBlackPixel(pixel: number[]) {
+    return pixel[0] < 128;
+  }
 }
 
 ===== src/main.tsx =====
@@ -7661,59 +8117,80 @@ const Payment = () => {
 export default Payment;
 
 ===== src/pages/QRGenerator.tsx =====
-import React, { useState, useRef } from 'react';
+// src/pages/QRGenerator.tsx (النسخة النهائية العاملة)
+import React, { useState, useRef, useEffect } from 'react';
 import { 
   Download, 
   Share2, 
   Copy, 
-  Palette, 
   Upload,
-  Eye,
   Save,
   Trash2,
   Plus,
-  Settings
+  Settings,
+  Palette,
+  Shapes,
+  Sticker,
+  ImageIcon,
+  RefreshCw,
+  Eye
 } from 'lucide-react';
-import QRCode from 'react-qr-code';
 import { useStore } from '../store/useStore';
-import type { QRCode as QRCodeType } from '../types';
+import QRShapes from '../components/qr/QRShapes';
+import QRStickers from '../components/qr/QRStickers';
+import { AdvancedQRGenerator, type QROptions } from '../lib/qr-generator';
 import toast from 'react-hot-toast';
 import { cn } from '../utils/cn';
 
 const QRGenerator = () => {
   const { user } = useStore();
+  const qrGenerator = useRef(new AdvancedQRGenerator());
+  
+  // QR Data State
   const [qrData, setQrData] = useState({
     type: 'url',
     content: '',
     title: '',
-    customization: {
-      foregroundColor: '#1D4ED8',
-      backgroundColor: '#FFFFFF',
-      size: 256,
-      logo: '',
-      logoSize: 32,
-      style: 'square' as 'square' | 'dots' | 'rounded'
-    }
   });
 
-  const [savedQRs, setSavedQRs] = useState<QRCodeType[]>([]);
-  const [showAdvanced, setShowAdvanced] = useState(false);
-  const qrRef = useRef<HTMLDivElement>(null);
+  // Customization State
+  const [customization, setCustomization] = useState<QROptions>({
+    size: 300,
+    foregroundColor: '#1D4ED8',
+    backgroundColor: '#FFFFFF',
+    shape: 'square',
+    pattern: 'square',
+    logoSize: 50,
+    eyeColor: '#1D4ED8',
+    eyeStrokeColor: '#1D4ED8',
+    eyeballColor: '#1D4ED8'
+  });
+
+  // UI State
+  const [activeTab, setActiveTab] = useState('content');
+  const [qrImageUrl, setQrImageUrl] = useState<string>('');
+  const [isGenerating, setIsGenerating] = useState(false);
+  
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const qrTypes = [
     { id: 'url', name: 'رابط موقع', placeholder: 'https://example.com' },
     { id: 'text', name: 'نص', placeholder: 'أدخل النص هنا' },
     { id: 'email', name: 'بريد إلكتروني', placeholder: 'example@domain.com' },
     { id: 'phone', name: 'رقم هاتف', placeholder: '+966501234567' },
-    { id: 'sms', name: 'رسالة نصية', placeholder: 'رقم الهاتف:الرسالة' },
-    { id: 'wifi', name: 'شبكة WiFi', placeholder: 'اسم الشبكة:كلمة المرور:نوع الحماية' },
-    { id: 'vcard', name: 'بطاقة اتصال', placeholder: 'الاسم:الهاتف:البريد' },
-    { id: 'location', name: 'موقع جغرافي', placeholder: 'خط العرض,خط الطول' },
-    { id: 'event', name: 'حدث', placeholder: 'عنوان الحدث:التاريخ:المكان' },
-    { id: 'social', name: 'وسائل التواصل', placeholder: 'https://linkedin.com/in/username' }
+    { id: 'wifi', name: 'شبكة WiFi', placeholder: 'اسم الشبكة:كلمة المرور:WPA' },
   ];
 
-  // دالة تحويل المحتوى إلى نص للـ QR Code
+  const tabs = [
+    { id: 'content', name: 'المحتوى', icon: Plus },
+    { id: 'shapes', name: 'الأشكال', icon: Shapes },
+    { id: 'stickers', name: 'الستيكرز', icon: Sticker },
+    { id: 'colors', name: 'الألوان', icon: Palette },
+    { id: 'patterns', name: 'الأنماط', icon: Settings },
+    { id: 'logo', name: 'اللوجو', icon: ImageIcon }
+  ];
+
+  // Generate QR content based on type
   const generateQRContent = (): string => {
     if (!qrData.content.trim()) return '';
     
@@ -7724,352 +8201,412 @@ const QRGenerator = () => {
         return `mailto:${qrData.content}`;
       case 'phone':
         return `tel:${qrData.content}`;
-      case 'sms':
-        const [phone, message] = qrData.content.split(':');
-        return `sms:${phone}?body=${encodeURIComponent(message || '')}`;
       case 'wifi':
         const [ssid, password, security] = qrData.content.split(':');
         return `WIFI:T:${security || 'WPA'};S:${ssid};P:${password};;`;
-      case 'vcard':
-        const [name, phoneNum, email] = qrData.content.split(':');
-        return `BEGIN:VCARD\nVERSION:3.0\nFN:${name}\nTEL:${phoneNum}\nEMAIL:${email}\nEND:VCARD`;
-      case 'location':
-        const [lat, lng] = qrData.content.split(',');
-        return `geo:${lat},${lng}`;
-      case 'event':
-        const [title, date, location] = qrData.content.split(':');
-        return `BEGIN:VEVENT\nSUMMARY:${title}\nDTSTART:${date}\nLOCATION:${location}\nEND:VEVENT`;
       default:
         return qrData.content;
     }
   };
 
-  const handleDownload = async () => {
-    if (!qrRef.current) return;
-
-    try {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      const svg = qrRef.current.querySelector('svg');
-      
-      if (!svg || !ctx) return;
-
-      const svgData = new XMLSerializer().serializeToString(svg);
-      const img = new Image();
-      
-      img.onload = () => {
-        canvas.width = qrData.customization.size;
-        canvas.height = qrData.customization.size;
-        
-        ctx.fillStyle = qrData.customization.backgroundColor;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        
-        const link = document.createElement('a');
-        link.download = `qr-${qrData.title || 'code'}.png`;
-        link.href = canvas.toDataURL();
-        link.click();
-      };
-      
-      img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
-      toast.success('تم تحميل رمز QR بنجاح!');
-    } catch (error) {
-      toast.error('حدث خطأ أثناء التحميل');
-    }
-  };
-
-  const handleShare = async () => {
-    const qrContent = generateQRContent();
-    
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: qrData.title || 'رمز QR',
-          text: qrContent,
-          url: qrData.type === 'url' ? qrContent : undefined
-        });
-      } catch (error) {
-        console.log('Error sharing:', error);
+  // Generate QR Code whenever data or customization changes
+  useEffect(() => {
+    const generateQR = async () => {
+      const content = generateQRContent();
+      if (!content) {
+        setQrImageUrl('');
+        return;
       }
-    } else {
-      navigator.clipboard.writeText(qrContent);
-      toast.success('تم نسخ المحتوى بنجاح!');
-    }
+
+      setIsGenerating(true);
+      try {
+        const qrUrl = await qrGenerator.current.generateQR(content, customization);
+        setQrImageUrl(qrUrl);
+      } catch (error) {
+        console.error('Error generating QR code:', error);
+        toast.error('حدث خطأ في توليد رمز QR');
+      } finally {
+        setIsGenerating(false);
+      }
+    };
+
+    generateQR();
+  }, [qrData, customization]);
+
+  // Handle shape selection
+  const handleShapeSelect = (shape: string) => {
+    setCustomization(prev => ({ ...prev, shape }));
+    toast.success(`تم اختيار شكل: ${shape}`);
   };
 
-  const handleSave = () => {
-    if (!qrData.content.trim()) {
-      toast.error('يرجى إدخال محتوى للرمز');
+  // Handle sticker selection
+  const handleStickerSelect = (sticker: string) => {
+    setCustomization(prev => ({ ...prev, sticker }));
+    toast.success('تم تطبيق الستيكر!');
+  };
+
+  // Handle pattern change
+  const handlePatternChange = (pattern: string) => {
+    setCustomization(prev => ({ ...prev, pattern: pattern as any }));
+    toast.success(`تم تغيير النمط إلى: ${pattern}`);
+  };
+
+  // Handle logo upload
+  const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error('حجم الملف يجب أن يكون أقل من 2MB');
       return;
     }
 
-    const newQR: QRCodeType = {
-      id: Date.now().toString(),
-      userId: user?.id || '1',
-      type: qrData.type as any,
-      title: qrData.title || `رمز ${qrTypes.find(t => t.id === qrData.type)?.name}`,
-      content: generateQRContent(), // تحويل إلى string
-      customization: qrData.customization,
-      analytics: {
-        scans: 0,
-        uniqueScans: 0
-      },
-      isActive: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const result = e.target?.result as string;
+      setCustomization(prev => ({ ...prev, logo: result }));
+      toast.success('تم رفع اللوجو بنجاح!');
     };
-
-    setSavedQRs([...savedQRs, newQR]);
-    toast.success('تم حفظ رمز QR بنجاح!');
+    reader.readAsDataURL(file);
   };
 
-  const handleDeleteSaved = (id: string) => {
-    setSavedQRs(savedQRs.filter(qr => qr.id !== id));
-    toast.success('تم حذف الرمز بنجاح');
+  // Download function
+  const handleDownload = () => {
+    if (!qrImageUrl) {
+      toast.error('لا يوجد رمز QR للتحميل');
+      return;
+    }
+
+    const link = document.createElement('a');
+    link.download = `qr-${qrData.title || 'code'}.png`;
+    link.href = qrImageUrl;
+    link.click();
+    toast.success('تم تحميل رمز QR بنجاح!');
   };
 
-  // الحصول على المحتوى المُعالج للعرض
+  // Reset function
+  const handleReset = () => {
+    setQrData({ type: 'url', content: '', title: '' });
+    setCustomization({
+      size: 300,
+      foregroundColor: '#1D4ED8',
+      backgroundColor: '#FFFFFF',
+      shape: 'square',
+      pattern: 'square',
+      logoSize: 50,
+      eyeColor: '#1D4ED8',
+      eyeStrokeColor: '#1D4ED8',
+      eyeballColor: '#1D4ED8'
+    });
+    toast.success('تم إعادة تعيين الإعدادات');
+  };
+
   const qrContentForDisplay = generateQRContent();
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
-          مولد رموز QR
-        </h1>
-        <p className="text-neutral-600 dark:text-neutral-400">
-          أنشئ رموز QR مخصصة لأي محتوى تريده
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
+            مولد رموز QR المتقدم
+          </h1>
+          <p className="text-neutral-600 dark:text-neutral-400">
+            أنشئ رموز QR مخصصة بأشكال وألوان احترافية
+          </p>
+        </div>
+        
+        <div className="flex items-center space-x-3 space-x-reverse">
+          <button
+            onClick={handleReset}
+            className="btn-secondary flex items-center space-x-2 space-x-reverse"
+          >
+            <RefreshCw className="w-4 h-4" />
+            <span>إعادة تعيين</span>
+          </button>
+          <button
+            onClick={handleDownload}
+            className="btn-primary flex items-center space-x-2 space-x-reverse"
+            disabled={!qrImageUrl}
+          >
+            <Download className="w-4 h-4" />
+            <span>تحميل</span>
+          </button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Generator Section */}
-        <div className="space-y-6">
-          {/* QR Type Selection */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Controls Section */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Tab Navigation */}
           <div className="card">
-            <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">
-              نوع المحتوى
-            </h2>
-            
-            <div className="grid grid-cols-2 gap-3">
-              {qrTypes.map((type) => (
+            <div className="flex flex-wrap gap-2 mb-6">
+              {tabs.map((tab) => (
                 <button
-                  key={type.id}
-                  onClick={() => setQrData({ ...qrData, type: type.id, content: '' })}
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
                   className={cn(
-                    "p-3 rounded-lg border text-sm font-medium transition-colors",
-                    qrData.type === type.id
-                      ? "border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300"
-                      : "border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600 text-neutral-700 dark:text-neutral-300"
+                    "flex items-center space-x-2 space-x-reverse px-4 py-2 rounded-lg font-medium transition-colors",
+                    activeTab === tab.id
+                      ? "bg-primary-500 text-white"
+                      : "bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700"
                   )}
                 >
-                  {type.name}
+                  <tab.icon className="w-4 h-4" />
+                  <span>{tab.name}</span>
                 </button>
               ))}
             </div>
-          </div>
 
-          {/* Content Input */}
-          <div className="card">
-            <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">
-              المحتوى
-            </h2>
-            
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                  عنوان الرمز (اختياري)
-                </label>
-                <input
-                  type="text"
-                  value={qrData.title}
-                  onChange={(e) => setQrData({ ...qrData, title: e.target.value })}
-                  className="input-field"
-                  placeholder="أدخل عنواناً للرمز"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                  المحتوى
-                </label>
-                <textarea
-                  value={qrData.content}
-                  onChange={(e) => setQrData({ ...qrData, content: e.target.value })}
-                  className="input-field min-h-24"
-                  placeholder={qrTypes.find(t => t.id === qrData.type)?.placeholder}
-                  rows={3}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Customization */}
-          <div className="card">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
-                التخصيص
-              </h2>
-              <button
-                onClick={() => setShowAdvanced(!showAdvanced)}
-                className="flex items-center space-x-2 space-x-reverse text-primary-500 hover:text-primary-600"
-              >
-                <Settings className="w-4 h-4" />
-                <span>خيارات متقدمة</span>
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                    لون الرمز
-                  </label>
-                  <div className="flex items-center space-x-3 space-x-reverse">
-                    <input
-                      type="color"
-                      value={qrData.customization.foregroundColor}
-                      onChange={(e) => setQrData({
-                        ...qrData,
-                        customization: { ...qrData.customization, foregroundColor: e.target.value }
-                      })}
-                      className="w-12 h-10 rounded-lg border border-neutral-300 dark:border-neutral-600"
-                    />
-                    <input
-                      type="text"
-                      value={qrData.customization.foregroundColor}
-                      onChange={(e) => setQrData({
-                        ...qrData,
-                        customization: { ...qrData.customization, foregroundColor: e.target.value }
-                      })}
-                      className="input-field flex-1"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                    لون الخلفية
-                  </label>
-                  <div className="flex items-center space-x-3 space-x-reverse">
-                    <input
-                      type="color"
-                      value={qrData.customization.backgroundColor}
-                      onChange={(e) => setQrData({
-                        ...qrData,
-                        customization: { ...qrData.customization, backgroundColor: e.target.value }
-                      })}
-                      className="w-12 h-10 rounded-lg border border-neutral-300 dark:border-neutral-600"
-                    />
-                    <input
-                      type="text"
-                      value={qrData.customization.backgroundColor}
-                      onChange={(e) => setQrData({
-                        ...qrData,
-                        customization: { ...qrData.customization, backgroundColor: e.target.value }
-                      })}
-                      className="input-field flex-1"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                  الحجم: {qrData.customization.size}px
-                </label>
-                <input
-                  type="range"
-                  min="128"
-                  max="512"
-                  step="32"
-                  value={qrData.customization.size}
-                  onChange={(e) => setQrData({
-                    ...qrData,
-                    customization: { ...qrData.customization, size: parseInt(e.target.value) }
-                  })}
-                  className="w-full h-2 bg-neutral-200 rounded-lg appearance-none cursor-pointer dark:bg-neutral-700"
-                />
-                <div className="flex justify-between text-xs text-neutral-500 dark:text-neutral-400 mt-1">
-                  <span>128px</span>
-                  <span>512px</span>
-                </div>
-              </div>
-
-              {showAdvanced && (
-                <div className="space-y-4 pt-4 border-t border-neutral-200 dark:border-neutral-700">
+            {/* Tab Content */}
+            <div className="min-h-96">
+              {/* Content Tab */}
+              {activeTab === 'content' && (
+                <div className="space-y-6">
                   <div>
-                    <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                      نمط الرمز
-                    </label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {['square', 'dots', 'rounded'].map((style) => (
+                    <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">
+                      نوع المحتوى
+                    </h3>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      {qrTypes.map((type) => (
                         <button
-                          key={style}
-                          onClick={() => setQrData({
-                            ...qrData,
-                            customization: { ...qrData.customization, style: style as any }
-                          })}
+                          key={type.id}
+                          onClick={() => setQrData({ ...qrData, type: type.id, content: '' })}
                           className={cn(
-                            "p-2 rounded-lg border text-sm transition-colors",
-                            qrData.customization.style === style
+                            "p-3 rounded-lg border text-sm font-medium transition-colors",
+                            qrData.type === type.id
                               ? "border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300"
-                              : "border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300"
+                              : "border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 text-neutral-700 dark:text-neutral-300"
                           )}
                         >
-                          {style === 'square' && 'مربع'}
-                          {style === 'dots' && 'نقاط'}
-                          {style === 'rounded' && 'مستدير'}
+                          {type.name}
                         </button>
                       ))}
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                      شعار (اختياري)
-                    </label>
-                    <div className="flex items-center space-x-3 space-x-reverse">
-                      <button className="btn-secondary flex items-center space-x-2 space-x-reverse">
-                        <Upload className="w-4 h-4" />
-                        <span>رفع شعار</span>
-                      </button>
-                      <span className="text-sm text-neutral-500 dark:text-neutral-400">
-                        PNG أو SVG، الحد الأقصى 1MB
-                      </span>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                        عنوان الرمز (اختياري)
+                      </label>
+                      <input
+                        type="text"
+                        value={qrData.title}
+                        onChange={(e) => setQrData({ ...qrData, title: e.target.value })}
+                        className="input-field"
+                        placeholder="أدخل عنواناً للرمز"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                        المحتوى
+                      </label>
+                      <textarea
+                        value={qrData.content}
+                        onChange={(e) => setQrData({ ...qrData, content: e.target.value })}
+                        className="input-field min-h-24"
+                        placeholder={qrTypes.find(t => t.id === qrData.type)?.placeholder}
+                        rows={3}
+                      />
                     </div>
                   </div>
                 </div>
               )}
-            </div>
-          </div>
 
-          {/* Actions */}
-          <div className="flex items-center space-x-3 space-x-reverse">
-            <button
-              onClick={handleSave}
-              className="btn-primary flex items-center space-x-2 space-x-reverse"
-              disabled={!qrData.content.trim()}
-            >
-              <Save className="w-4 h-4" />
-              <span>حفظ الرمز</span>
-            </button>
-            <button
-              onClick={handleDownload}
-              className="btn-secondary flex items-center space-x-2 space-x-reverse"
-              disabled={!qrData.content.trim()}
-            >
-              <Download className="w-4 h-4" />
-              <span>تحميل</span>
-            </button>
-            <button
-              onClick={handleShare}
-              className="p-3 border border-neutral-300 dark:border-neutral-600 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
-              disabled={!qrData.content.trim()}
-            >
-              <Share2 className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
-            </button>
+              {/* Shapes Tab */}
+              {activeTab === 'shapes' && (
+                <div>
+                  <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">
+                    اختر شكل الرمز
+                  </h3>
+                  <QRShapes
+                    selectedShape={customization.shape}
+                    onShapeSelect={handleShapeSelect}
+                  />
+                </div>
+              )}
+
+              {/* Stickers Tab */}
+              {activeTab === 'stickers' && (
+                <div>
+                  <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">
+                    اختر إطار الستيكر
+                  </h3>
+                  <QRStickers
+                    selectedSticker={customization.sticker || ''}
+                    onStickerSelect={handleStickerSelect}
+                  />
+                </div>
+              )}
+
+              {/* Colors Tab */}
+              {activeTab === 'colors' && (
+                <div className="space-y-6">
+                  <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+                    تخصيص الألوان
+                  </h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {[
+                      { key: 'foregroundColor', label: 'لون المقدمة' },
+                      { key: 'backgroundColor', label: 'لون الخلفية' },
+                      { key: 'eyeColor', label: 'لون العين' },
+                      { key: 'eyeStrokeColor', label: 'لون حدود العين' },
+                      { key: 'eyeballColor', label: 'لون بؤبؤ العين' }
+                    ].map((colorOption) => (
+                      <div key={colorOption.key}>
+                        <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                          {colorOption.label}
+                        </label>
+                        <div className="flex items-center space-x-3 space-x-reverse">
+                          <input
+                            type="color"
+                            value={customization[colorOption.key as keyof QROptions] as string}
+                            onChange={(e) => setCustomization(prev => ({ 
+                              ...prev, 
+                              [colorOption.key]: e.target.value 
+                            }))}
+                            className="w-12 h-10 rounded-lg border border-neutral-300 dark:border-neutral-600"
+                          />
+                          <input
+                            type="text"
+                            value={customization[colorOption.key as keyof QROptions] as string}
+                            onChange={(e) => setCustomization(prev => ({ 
+                              ...prev, 
+                              [colorOption.key]: e.target.value 
+                            }))}
+                            className="input-field flex-1"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Patterns Tab */}
+              {activeTab === 'patterns' && (
+                <div className="space-y-6">
+                  <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+                    نمط الرمز
+                  </h3>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-3">
+                      شكل النقاط
+                    </label>
+                    <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                      {[
+                        { id: 'square', name: 'مربع' },
+                        { id: 'dots', name: 'نقاط' },
+                        { id: 'rounded', name: 'مستدير' },
+                        { id: 'diamond', name: 'معين' },
+                        { id: 'star', name: 'نجمة' }
+                      ].map((pattern) => (
+                        <button
+                          key={pattern.id}
+                          onClick={() => handlePatternChange(pattern.id)}
+                          className={cn(
+                            "p-3 rounded-lg border text-sm font-medium transition-colors",
+                            customization.pattern === pattern.id
+                              ? "border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300"
+                              : "border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 text-neutral-700 dark:text-neutral-300"
+                          )}
+                        >
+                          {pattern.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                      حجم الرمز: {customization.size}px
+                    </label>
+                    <input
+                      type="range"
+                      min="200"
+                      max="500"
+                      step="50"
+                      value={customization.size}
+                      onChange={(e) => setCustomization(prev => ({ 
+                        ...prev, 
+                        size: parseInt(e.target.value) 
+                      }))}
+                      className="w-full h-2 bg-neutral-200 rounded-lg appearance-none cursor-pointer dark:bg-neutral-700"
+                    />
+                    <div className="flex justify-between text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+                      <span>200px</span>
+                      <span>500px</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Logo Tab */}
+              {activeTab === 'logo' && (
+                <div className="space-y-6">
+                  <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+                    إضافة لوجو
+                  </h3>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                      رفع اللوجو
+                    </label>
+                    <div className="flex items-center space-x-3 space-x-reverse">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleLogoUpload}
+                        className="hidden"
+                        ref={fileInputRef}
+                      />
+                      <button
+                        onClick={() => fileInputRef.current?.click()}
+                        className="btn-secondary flex items-center space-x-2 space-x-reverse"
+                      >
+                        <Upload className="w-4 h-4" />
+                        <span>اختر لوجو</span>
+                      </button>
+                      {customization.logo && (
+                        <button
+                          onClick={() => setCustomization(prev => ({ ...prev, logo: undefined }))}
+                          className="btn-outline flex items-center space-x-2 space-x-reverse"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                          <span>إزالة</span>
+                        </button>
+                      )}
+                    </div>
+                    <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-1">
+                      PNG أو JPG، الحد الأقصى 2MB
+                    </p>
+                  </div>
+
+                  {customization.logo && (
+                    <div>
+                      <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                        حجم اللوجو: {customization.logoSize}px
+                      </label>
+                      <input
+                        type="range"
+                        min="20"
+                        max="100"
+                        value={customization.logoSize}
+                        onChange={(e) => setCustomization(prev => ({ 
+                          ...prev, 
+                          logoSize: parseInt(e.target.value) 
+                        }))}
+                        className="w-full"
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -8081,19 +8618,22 @@ const QRGenerator = () => {
               معاينة الرمز
             </h2>
             
-            <div className="flex justify-center p-8 bg-neutral-50 dark:bg-neutral-800 rounded-lg">
-              {qrContentForDisplay ? (
-                <div ref={qrRef}>
-                  <QRCode
-                    value={qrContentForDisplay}
-                    size={qrData.customization.size}
-                    fgColor={qrData.customization.foregroundColor}
-                    bgColor={qrData.customization.backgroundColor}
-                  />
+            <div className="flex justify-center p-8 bg-neutral-50 dark:bg-neutral-800 rounded-lg min-h-80">
+              {isGenerating ? (
+                <div className="text-center text-neutral-500 dark:text-neutral-400 flex flex-col items-center justify-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500 mb-4"></div>
+                  <p>جاري إنشاء الرمز...</p>
                 </div>
+              ) : qrImageUrl ? (
+                <img 
+                  src={qrImageUrl} 
+                  alt="Generated QR Code" 
+                  className="max-w-full max-h-full object-contain"
+                  style={{ maxWidth: customization.size, maxHeight: customization.size }}
+                />
               ) : (
-                <div className="text-center text-neutral-500 dark:text-neutral-400">
-                  <div className="w-32 h-32 border-2 border-dashed border-neutral-300 dark:border-neutral-600 rounded-lg flex items-center justify-center mb-2">
+                <div className="text-center text-neutral-500 dark:text-neutral-400 flex flex-col items-center justify-center">
+                  <div className="w-32 h-32 border-2 border-dashed border-neutral-300 dark:border-neutral-600 rounded-lg flex items-center justify-center mb-4">
                     <Eye className="w-8 h-8" />
                   </div>
                   <p>أدخل محتوى لعرض الرمز</p>
@@ -8111,59 +8651,54 @@ const QRGenerator = () => {
             )}
           </div>
 
-          {/* Saved QR Codes */}
+          {/* Quick Actions */}
           <div className="card">
-            <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">
-              الرموز المحفوظة ({savedQRs.length})
-            </h2>
+            <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">
+              إجراءات سريعة
+            </h3>
             
-            {savedQRs.length === 0 ? (
-              <div className="text-center py-8 text-neutral-500 dark:text-neutral-400">
-                <div className="w-16 h-16 bg-neutral-100 dark:bg-neutral-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Plus className="w-8 h-8" />
-                </div>
-                <p>لم تحفظ أي رموز QR بعد</p>
-              </div>
-            ) : (
-              <div className="space-y-3 max-h-96 overflow-y-auto">
-                {savedQRs.map((qr) => (
-                  <div key={qr.id} className="flex items-center space-x-3 space-x-reverse p-3 bg-neutral-50 dark:bg-neutral-800 rounded-lg">
-                    <div className="w-12 h-12 bg-white rounded border flex items-center justify-center">
-                      <QRCode
-                        value={typeof qr.content === 'string' ? qr.content : JSON.stringify(qr.content)}
-                        size={40}
-                        fgColor={qr.customization.foregroundColor}
-                        bgColor={qr.customization.backgroundColor}
-                      />
-                    </div>
-                    
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-neutral-900 dark:text-neutral-100 truncate">
-                        {qr.title}
-                      </h3>
-                      <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                        {qr.analytics.scans} مسح • {new Date(qr.createdAt).toLocaleDateString('ar-SA')}
-                      </p>
-                    </div>
-                    
-                    <div className="flex items-center space-x-2 space-x-reverse">
-                      <button className="p-1 text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100">
-                        <Eye className="w-4 h-4" />
-                      </button>
-                      <button className="p-1 text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100">
-                        <Download className="w-4 h-4" />
-                      </button>
-                      <button 
-                        onClick={() => handleDeleteSaved(qr.id)}
-                        className="p-1 text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+            <div className="space-y-3">
+              <button
+                onClick={handleDownload}
+                disabled={!qrImageUrl}
+                className="w-full btn-primary flex items-center justify-center space-x-2 space-x-reverse disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Download className="w-4 h-4" />
+                <span>تحميل PNG</span>
+              </button>
+              
+              <button
+                onClick={() => {
+                  if (qrContentForDisplay) {
+                    navigator.clipboard.writeText(qrContentForDisplay);
+                    toast.success('تم نسخ المحتوى!');
+                  }
+                }}
+                disabled={!qrContentForDisplay}
+                className="w-full btn-secondary flex items-center justify-center space-x-2 space-x-reverse disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Copy className="w-4 h-4" />
+                <span>نسخ المحتوى</span>
+              </button>
+              
+              <button
+                onClick={() => {
+                  if (navigator.share && qrContentForDisplay) {
+                    navigator.share({
+                      title: qrData.title || 'رمز QR',
+                      text: qrContentForDisplay
+                    });
+                  } else {
+                    toast.error('المشاركة غير مدعومة في هذا المتصفح');
+                  }
+                }}
+                disabled={!qrContentForDisplay}
+                className="w-full btn-outline flex items-center justify-center space-x-2 space-x-reverse disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Share2 className="w-4 h-4" />
+                <span>مشاركة</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -12961,6 +13496,37 @@ export interface ScanSession {
   createdAt: string;
 }
 
+
+
+
+
+export interface QRCodeCustomization {
+  foregroundColor: string;
+  backgroundColor: string;
+  size: number;
+  customStrokeColor: string;
+  customEyeColor: string;
+  customEyeStrokeColor: string;
+  customEyeballColor: string;
+  shape: string;
+  pattern: 'square' | 'dots' | 'rounded' | 'diamond' | 'star';
+  logo: string;
+  logoSize: number;
+  logoBackgroundColor: string;
+  logoCornerRadius: number;
+  sticker: string;
+  backgroundImage: string;
+  qrPosition: { x: number; y: number };
+  qrScale: number;
+}
+
+export interface QRTemplate {
+  id: string;
+  name: string;
+  category: string;
+  customization: QRCodeCustomization;
+  preview: string;
+}
 ===== src/utils/cn.ts =====
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
