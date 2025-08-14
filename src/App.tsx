@@ -29,6 +29,8 @@ import Settings from './pages/Settings';
 import Support from './pages/Support';
 import Subscription from './pages/Subscription';
 import ThemeCustomizer from './components/ThemeCustomizer';
+import Solutions from './pages/Solutions/Solutions';
+import SolutionBuilder from './pages/Solutions/SolutionBuilder';
 
 function App() {
   const { isAuthenticated, darkMode } = useStore();
@@ -91,6 +93,7 @@ function App() {
               isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />
             } 
           />
+
           <Route 
             path="/register" 
             element={
@@ -129,6 +132,13 @@ function App() {
               isAuthenticated ? <Layout><CardView /></Layout> : <Navigate to="/login" replace />
             }
           />
+          <Route path="/solutions"             element={
+              isAuthenticated ? <Layout><Solutions /></Layout> : <Navigate to="/login" replace />
+            } />
+<Route path="/solutions/:solutionId/create" element={
+              isAuthenticated ? <Layout><SolutionBuilder /></Layout> : <Navigate to="/login" replace />
+            } />
+
           <Route 
             path="/cards/:id/edit" 
             element={

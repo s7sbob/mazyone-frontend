@@ -16,7 +16,8 @@ import {
   X,
   Menu,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Zap
 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { cn } from '../../utils/cn';
@@ -74,6 +75,12 @@ const Sidebar = () => {
       icon: Scan,
       badge: null
     },
+    {
+  name: 'الحلول',
+  href: '/solutions',
+  icon: Zap, // تأكد من استيراد Zap من lucide-react
+  badge: null
+},
     {
       name: 'التحليلات',
       href: '/analytics',
